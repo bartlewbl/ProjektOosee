@@ -5,9 +5,10 @@ import java.io.*;
 import java.nio.file.Paths;
 
 public class MyMainWindow extends JFrame {
+    Tabelle tabelle = new Tabelle();
     public MyMainWindow (String _name){
         super(_name);
-        Tabelle tabelle = new Tabelle();
+        
 
 
         JMenuBar menuBar = new JMenuBar();
@@ -21,8 +22,9 @@ public class MyMainWindow extends JFrame {
         menuDatei.add(menuSichern = new JMenuItem ("Sichern"));
         menuDatei.add(menuLaden = new JMenuItem ("Laden"));
 
-        JMenuItem menuReset,menuNeuesTeam;
+        JMenuItem menuReset,menuNeuesTeam,menuDelete;
         menuTabelle.add(menuNeuesTeam = new JMenuItem("Neues Team"));
+        menuTabelle.add(menuDelete = new JMenuItem("Lösche Team"));
         menuTabelle.add(menuReset = new JMenuItem ("Reset"));
         
 
@@ -60,9 +62,10 @@ public class MyMainWindow extends JFrame {
         });
         menuNeuesTeam.addActionListener(new ActionListener (){
             public void actionPerformed(ActionEvent ae){
-                NeuesTeamDialog addDialog = new NeuesTeamDialog("Hello");
-                addDialog.setSize(500,300);
-                addDialog.setVisible(true);
+                
+                NeuesTeamDialog addDialog = new NeuesTeamDialog(MyMainWindow.this,"Neues Team");
+                tabelle.addTeam(addDialog.getLetztesVerein());
+                addDialog.dispose();
             }
 
         });
@@ -77,7 +80,8 @@ public class MyMainWindow extends JFrame {
     
 
     public static void main (String []args){
-        new MyMainWindow("Füßballmanager");
+        MyMainWindow myWindow = new MyMainWindow("Füßballmanager");
+
     }
  
 }
