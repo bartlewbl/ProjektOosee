@@ -161,7 +161,7 @@ public class Verein {
         _torw = torw;
     }
 
-    @Override
+    
     public int compareTo(Verein ver){
         if (this.getTeamPunkte() > ver.getTeamPunkte()){                 // 1 = this  -1 = ver  0 = gleich
             return 1;

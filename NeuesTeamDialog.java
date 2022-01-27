@@ -13,9 +13,9 @@ public class NeuesTeamDialog extends JDialog {
         super(frameParent,title);
         
 
-        JLabel jLabelKommu = new JLabel("Geben Sie bitte die Name ihres Vereins:");
+        JLabel jLabelKommu = new JLabel("Geben Sie bitte die Name ihres Vereins(Max:20 Character):");
 
-        JTextArea jTextAreaTeamName = new JTextArea("0",1,1);
+        JTextArea jTextAreaTeamName = new JTextArea("",1,1);
 
         JPanel buttonPanel = new JPanel ();
 
@@ -49,7 +49,7 @@ public class NeuesTeamDialog extends JDialog {
 
         setLocationRelativeTo(frameParent);
         setModal(true);
-        setSize(300,150);
+        setSize(350,150);
         setVisible(true);
     }
     public Verein getLetztesVerein (){

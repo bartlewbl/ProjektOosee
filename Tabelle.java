@@ -2,7 +2,6 @@ import java.nio.file.*;
 import java.io.*;
 import java.nio.file.Paths;
 
-import javax.management.RuntimeErrorException;
 
 public class Tabelle {
     
@@ -12,8 +11,9 @@ public class Tabelle {
 	private int _tore2=0;
     private final String CSTR_TRENN_ZEICHEN= ";";
 
-    public Tabelle (){
-
+    IReporter _reporter;
+    public Tabelle (IReporter rep){
+        _reporter = rep;
     }
 
     public void addTeam(Verein ver){
@@ -94,27 +94,27 @@ public class Tabelle {
     public void starteSpiel(Tabelle a, Verein ver1, Verein ver2){
 				
 		for(int i=0; i<=90; i++){
-			System.out.println("\nSpielminute: "+i);
+			_reporter.giveNewMessage("\nSpielminute: "+i);
 			starteSpielMin(i,ver1,ver2);
 
 			try{
-				Thread.sleep(500); // Erweiterung aus Aufgabe 5a -> wir verzögern damit das Spiel so dass eine Minute in 0,5 Sekunden vergeht.
+				Thread.sleep(50); // Erweiterung aus Aufgabe 5a -> wir verzögern damit das Spiel so dass eine Minute in 0,5 Sekunden vergeht.
 			}catch(Exception e){
 			}
 			
 		}
         if(_tore1==_tore2){
-			System.out.println("\nDas Spiel zwischen " +ver1.getNameTeam()+ " und " +ver2.getNameTeam()+" ist unentschieden ausgefallen mit: " + _tore1+":"+_tore2);
+			_reporter.giveNewMessage("\nDas Spiel zwischen " +ver1.getNameTeam()+ " und " +ver2.getNameTeam()+" ist unentschieden ausgefallen mit: " + _tore1+":"+_tore2);
             ver1.setTeamPunkte(ver1.getTeamPunkte()+1);
             ver2.setTeamPunkte(ver2.getTeamPunkte()+1);
 		}
 		
 		if(_tore1>_tore2){
-			System.out.println("\nSieg fuer: "+ ver1.getNameTeam()+" "+_tore1+":"+_tore2);
+			_reporter.giveNewMessage("\nSieg fuer: "+ ver1.getNameTeam()+" "+_tore1+":"+_tore2);
             ver1.setTeamPunkte(ver1.getTeamPunkte()+3);
 		}
 		if(_tore1<_tore2){
-			System.out.println("\nSieg fuer: "+ ver2.getNameTeam()+" "+_tore2+":"+_tore1);
+			_reporter.giveNewMessage("\nSieg fuer: "+ ver2.getNameTeam()+" "+_tore2+":"+_tore1);
             ver2.setTeamPunkte(ver2.getTeamPunkte()+3);
 		}
         ver1.setAnzahlTore(ver1.getAnzahlTore()+_tore1);
@@ -129,20 +129,20 @@ public class Tabelle {
     }
     public void starteSpielMin(int spielMin,Verein ver1,Verein ver2){
 		if(ver1.angriff()){
-			System.out.print("AV               ");
+			_reporter.giveNewMessage("AV               ");
 			if(ver2.verteidigt()){
-				System.out.println("VT");
+				_reporter.giveNewMessage("VT");
 			}else{
-				System.out.println("!!!");
+				_reporter.giveNewMessage("!!!");
 				int schuss=ver1.schiesseTor();
 				
 				if(ver2.kassiereTor(schuss)){
 					_tore1+=1;
-					System.out.println("TOOOR fuer Mannschaft "+ ver1.getNameTeam()+ " in der "+ spielMin+"ten Spielminute!");	
-					System.out.println("Neuer Spielstand " + ver1.getNameTeam()+" " +_tore1 + ":" + _tore2 + " "+ ver2.getNameTeam());
+					_reporter.giveNewMessage("TOOOR fuer Mannschaft "+ ver1.getNameTeam()+ " in der "+ spielMin+"ten Spielminute!");	
+					_reporter.giveNewMessage("Neuer Spielstand " + ver1.getNameTeam()+" " +_tore1 + ":" + _tore2 + " "+ ver2.getNameTeam());
 				}
 				else{
-					System.out.println("Gute Parade durch den Keeper von Mannschaft " + ver2.getNameTeam());
+					_reporter.giveNewMessage("Gute Parade durch den Keeper von Mannschaft " + ver2.getNameTeam());
 				}
 			}
 		}
@@ -151,16 +151,16 @@ public class Tabelle {
 			//System.out.println("AV");
 						
 			if(ver1.verteidigt()){
-				System.out.println("VT               AV");
+				_reporter.giveNewMessage("VT               AV");
 			}else{
-				System.out.println("!!!              AV");
+				_reporter.giveNewMessage("!!!              AV");
 				int schuss=ver2.schiesseTor();
 				if(ver1.kassiereTor(schuss)){
 					_tore2+=1;
-					System.out.println("TOOOR fuer Mannschaft "+ ver2.getNameTeam()+ " in der "+ spielMin+"ten Spielminute!");
-					System.out.println("Neuer Spielstand " + ver1.getNameTeam()+" "+ _tore1 + ":" + _tore2 + " "+ ver2.getNameTeam());
+					_reporter.giveNewMessage("TOOOR fuer Mannschaft "+ ver2.getNameTeam()+ " in der "+ spielMin+"ten Spielminute!");
+					_reporter.giveNewMessage("Neuer Spielstand " + ver1.getNameTeam()+" "+ _tore1 + ":" + _tore2 + " "+ ver2.getNameTeam());
 				}else{
-					System.out.println("Gute Parade durch den Keeper von Mannschaft " + ver1.getNameTeam());
+					_reporter.giveNewMessage("Gute Parade durch den Keeper von Mannschaft " + ver1.getNameTeam());
 				}
 			}
 		}
@@ -271,24 +271,42 @@ public class Tabelle {
             }
         }
     }
+    public Verein getTeam (int i){
+        return _teamArray[i];
+    }
+
+    public void getTeamsToTabelle(){
+        _reporter.resetTabelle();
 
 
+        for(int n = 0; n<_teamArray.length; n++){
+            String leerZeichen = " ";
+            String leerZeichenZusammen = "";
+            String zwischenSchritt;
+            String c = _teamArray[n].getNameTeam();
+            int lengthOfString = c.length();
+            for (int i =lengthOfString; i < 42-lengthOfString; i++){
+                zwischenSchritt = leerZeichenZusammen;
+                leerZeichenZusammen = zwischenSchritt + leerZeichen;
+            }
 
 
+            _reporter.giveNewMessage(_teamArray[n].getNameTeam() + leerZeichenZusammen + _teamArray[n].getTeamPunkte() + "             " + _teamArray[n].getAnzahlTore() + "              " + _teamArray[n].getGegenTore() + "                         " + _teamArray[n].getAnzahlSpiele());
+        }
+    }
+
+    public int getLengthArray(){
+        return _teamArray.length;
+    }
+    public Verein[] getTeamArray (){
+        return _teamArray;
+    }
 
 
 
 
     public static void main (String [] args){
-        Tabelle tabelle = new Tabelle();
-        tabelle.ladenDatei(tabelle.getFilePath());
-        //System.out.println(tabelle.getVerein(0));
-        //System.out.println(tabelle.getVerein(1));
-        tabelle.addTeam(new Verein ("BWL"));
-        tabelle.addTeam(new Verein ("BWL1"));
-        tabelle.addTeam(new Verein ("BWL2"));
-        tabelle.starteSpiel(tabelle,tabelle.getVerein(1),tabelle.getVerein(2));
-        tabelle.speichernDatei(tabelle.getFilePath());
+        
     }
 
 }
