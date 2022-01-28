@@ -28,15 +28,16 @@ public class MyMainWindow extends JFrame implements IReporter {
         menuBar.add(menuDatei = new JMenu("Datei"));
         menuBar.add(menuTabelle = new JMenu("Tabelle"));
 
-        JMenuItem menuSichern, menuLaden;
+        JMenuItem menuSichern, menuLaden, menuRestart;
         menuDatei.add(menuSichern = new JMenuItem ("Sichern"));
         menuDatei.add(menuLaden = new JMenuItem ("Laden"));
+        menuDatei.add(menuRestart = new JMenuItem ("Restart"));
 
         JMenuItem menuReset,menuNeuesTeam,menuDelete,menuShow;
         menuTabelle.add(menuShow = new JMenuItem ("Aktualisiere Tabelle"));
         menuTabelle.add(menuNeuesTeam = new JMenuItem("Neues Team"));
         menuTabelle.add(menuDelete = new JMenuItem("Lösche Team"));
-        menuTabelle.add(menuReset = new JMenuItem ("Reset"));
+        menuTabelle.add(menuReset = new JMenuItem ("Reset Teams"));
         
         JButton starteButton = new JButton ("Neues Spiel");
         JButton deleteButton = new JButton ("Lösche Team");
@@ -72,6 +73,24 @@ public class MyMainWindow extends JFrame implements IReporter {
                 }
             }
         });
+        
+        menuRestart.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent ae){
+                Runnable runAction = new Runnable() {
+                    Tabelle tab = new Tabelle(MyMainWindow.this);
+                
+                    public void run(){
+                        tabelle = tab;
+                        tabelle.getTeamsToTabelle();
+                    }
+                };
+                _guiThreadDecoupl = new GuiThreadDecoupler(runAction);
+                _guiThreadDecoupl.startActionExecution();
+                
+            }
+        });
+        
+        
         menuReset.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent ae){
                 Runnable runAction = new Runnable() {
