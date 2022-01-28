@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 public class SpielDialog extends JDialog  {
     private GuiThreadDecoupler _guiThreadDecoupl1;
     
-    IReporterSpiel IReport;
+    
     Tabelle tabelle;
     public SpielDialog (JFrame parentFrame,String title,Tabelle tab,Verein[]copyArray){
         super(parentFrame,title);

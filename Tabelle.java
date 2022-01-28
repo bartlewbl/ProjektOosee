@@ -120,9 +120,14 @@ public class Tabelle {
         ver1.setAnzahlTore(ver1.getAnzahlTore()+_tore1);
         ver2.setAnzahlTore(ver2.getAnzahlTore()+_tore2);
 
+        ver1.setGegenTore(ver1.getGegenTore()+_tore2);
+        ver2.setGegenTore(ver2.getGegenTore()+_tore1);
         
-        
+        ver1.setAnzahlSpiele(ver1.getAnzahlSpiele()+1);
+        ver2.setAnzahlSpiele(ver2.getAnzahlSpiele()+1);
 
+        _tore1 = 0;
+        _tore2 = 0;
 
         System.out.println(ver1.getAnzahlTore());
         System.out.println(ver2.getAnzahlTore());

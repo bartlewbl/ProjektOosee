@@ -63,14 +63,27 @@ public class MyMainWindow extends JFrame implements IReporter {
 
         menuLaden.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent ae){
-                System.out.println("Laden gedrückt");
-                JFileChooser fileDialog = new JFileChooser();
-                fileDialog.setCurrentDirectory(tabelle.getFilePath());
-                int result = fileDialog.showSaveDialog(MyMainWindow.this);
-                if (result == JFileChooser.APPROVE_OPTION){
-                    File f = fileDialog.getSelectedFile();
-                    tabelle.ladenDatei(f);
-                }
+                Runnable runAction = new Runnable() {
+                    Tabelle tab = new Tabelle(MyMainWindow.this);
+                
+                    public void run(){
+                        System.out.println("Laden gedrückt");
+                        JFileChooser fileDialog = new JFileChooser();
+                        fileDialog.setCurrentDirectory(tabelle.getFilePath());
+                        int result = fileDialog.showSaveDialog(MyMainWindow.this);
+                        if (result == JFileChooser.APPROVE_OPTION){
+                        tabelle = tab;
+                        tabelle.getTeamsToTabelle();
+                        File f = fileDialog.getSelectedFile();
+                        tabelle.ladenDatei(f);
+                        }
+                    
+                        tabelle.getTeamsToTabelle();
+                    }
+                };
+                _guiThreadDecoupl = new GuiThreadDecoupler(runAction);
+                _guiThreadDecoupl.startActionExecution();
+                
             }
         });
         
